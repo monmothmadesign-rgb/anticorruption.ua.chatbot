@@ -164,11 +164,11 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 my-3">
                         <div class="bg-blue-50 dark:bg-blue-900/30 p-3 rounded-lg border border-blue-100 dark:border-blue-800">
                             <strong>Юридичний радник</strong>
-                            <p class="text-xs mt-1 text-gray-600 dark:text-gray-300">Аналіз ситуацій, пошук в <a href="https://zakon.rada.gov.ua/" target="_blank" class="underline hover:text-blue-600 transition-colors">zakon.rada.gov.ua</a>, плани дій та пошук судової практики.</p>
+                            <p class="text-xs mt-1 text-gray-600 dark:text-gray-300">Аналіз ситуацій, пошук на <a href="https://zakon.rada.gov.ua/" target="_blank" class="underline hover:text-blue-600 transition-colors">zakon.rada.gov.ua</a>, плани дій та пошук судової практики.</p>
                         </div>
                         <div class="bg-purple-50 dark:bg-purple-900/30 p-3 rounded-lg border border-purple-100 dark:border-purple-800">
                             <strong>Пошук зображень</strong>
-                            <p class="text-xs mt-1 text-gray-600 dark:text-gray-300">Напишіть <span class="font-mono bg-gray-200 dark:bg-gray-700 px-1 rounded">Знайди фото...</span> щоб знайти та показати справжні зображення.</p>
+                            <p class="text-xs mt-1 text-gray-600 dark:text-gray-300">Напишіть <span class="font-mono bg-gray-200 dark:bg-gray-700 px-1 rounded">Знайдіть фото...</span>, щоб знайти та показати справжні зображення.</p>
                         </div>
                     </div>
                     <p class="text-xs opacity-70">Усі відповіді формуються в режимі реального часу без штучних затримок.</p>
@@ -186,7 +186,7 @@
                     id="user-input"
                     rows="1"
                     class="w-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-2xl py-4 pl-5 pr-12 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none max-h-32"
-                    placeholder="Опишіть юридичну проблему або напишіть 'знайди фото...'"
+                    placeholder="Опишіть юридичну проблему або напишіть 'знайдіть фото...'"
                 ></textarea>
                 
                 <!-- Loading Spinner -->
@@ -213,7 +213,9 @@
 
     <script>
         /* --- CONFIGURATION --- */
-        const apiKey = ""; // Використовуємо системний ключ
+        // ВАЖЛИВО: Оскільки виникає помилка 400 при використанні системного ключа,
+        // я повертаю ваш ключ API для забезпечення працездатності.
+        const apiKey = "AIzaSyBVoRC4oDSVpeCTamLuJz0Jzvqb6soAXVw";
         
         // Endpoints (Використовуємо тільки Text/Chat API з доступом до пошуку)
         const TEXT_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
@@ -229,7 +231,7 @@
            - Знаходження актуальних редакцій законів.
            - Пошуку подібних судових справ (судова практика).
            - Пошуку корисних відео (YouTube) або статей.
-        4. СТИЛЬ: Лаконічно, по суті, без зайвих слів.
+        4. СТИЛЬ: Лаконічно, по суті, без зайвих слів. Дотримуйся норм українського правопису 2019 року.
         5. ЗАВЕРШЕННЯ: У кінці кожної відповіді запитуй: "Як я можу до Вас звертатися?"
         
         СТРУКТУРА ВІДПОВІДІ (Markdown):
@@ -242,7 +244,7 @@
         // Промпт для пошуку зображень
         const SYSTEM_PROMPT_IMAGE_SEARCH = `
         ТИ: Експерт із пошуку медіаконтенту.
-        ЗАВДАННЯ: Знайти справжнє, відповідне зображення в інтернеті за запитом користувача.
+        ЗАВДАННЯ: Знайти справжнє, відповідне зображення в Інтернеті за запитом користувача.
         
         ПРАВИЛА:
         1. Використовуй Google Search для пошуку зображення.
@@ -303,7 +305,7 @@
 
             // 2. Determine Intent (Search Image vs Legal Text)
             // Список тригерів для пошуку зображень
-            const searchTriggers = /^(знайди|пошук|фото|зображення|картинка|find|search|photo|image|picture|show me)/i;
+            const searchTriggers = /^(знайди|знайдіть|пошук|фото|зображення|картинка|find|search|photo|image|picture|show me)/i;
             const isImageSearchRequest = searchTriggers.test(message);
 
             try {
@@ -314,7 +316,7 @@
                 }
             } catch (error) {
                 console.error(error);
-                appendMessage(`⚠️ **Помилка:** ${error.message || "Не вдалося отримати відповідь."}`, 'bot');
+                appendMessage(`⚠️ **Помилка:** ${error.message || "Не вдалося отримати відповідь. Перевірте API-ключ."}`, 'bot');
             } finally {
                 setLoading(false);
             }
