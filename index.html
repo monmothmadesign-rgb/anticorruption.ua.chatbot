@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Юридичний помічник і пошук</title>
+    <title>Legal Assistant & Search</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Marked.js для Markdown -->
+    <!-- Marked.js for Markdown -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
     <!-- Google Fonts -->
@@ -27,8 +27,6 @@
                         glass: {
                             light: 'rgba(255, 255, 255, 0.6)',
                             dark: 'rgba(17, 24, 39, 0.6)',
-                            border: 'rgba(255, 255, 255, 0.2)',
-                            borderDark: 'rgba(255, 255, 255, 0.05)',
                         }
                     },
                     animation: {
@@ -90,14 +88,12 @@
             margin: 1em 0;
             opacity: 0.8;
         }
-        /* Image handling in chat */
         .prose-content img {
             border-radius: 0.75rem;
             max-width: 100%;
             height: auto;
             margin-top: 1rem;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
         
         /* Background Animation */
@@ -120,7 +116,7 @@
     </div>
 
     <!-- Header -->
-    <header class="glass-panel bg-glass-light dark:bg-glass-dark sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
+    <header class="glass-panel bg-glass-light dark:bg-glass-dark sticky top-0 z-50 px-4 sm:px-6 py-4 flex justify-between items-center">
         <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/30">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
@@ -128,24 +124,32 @@
                 </svg>
             </div>
             <div>
-                <h1 class="font-display text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
+                <h1 id="app-title" class="font-display text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
                     Юридичний помічник
                 </h1>
-                <p class="text-xs font-medium text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                <p id="app-subtitle" class="text-xs font-medium text-gray-500 dark:text-gray-400 flex items-center gap-1">
                     <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
                     Онлайн • Rada.gov.ua • Google Пошук
                 </p>
             </div>
         </div>
 
-        <button id="theme-toggle" class="p-2.5 rounded-xl hover:bg-gray-200/50 dark:hover:bg-gray-700/50 transition-all focus:outline-none group">
-            <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 hidden dark:block text-yellow-400 group-hover:rotate-45 transition-transform">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
-            </svg>
-            <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 block dark:hidden text-gray-600 group-hover:-rotate-12 transition-transform">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
-            </svg>
-        </button>
+        <div class="flex items-center gap-2">
+            <!-- Language Toggle -->
+            <button id="lang-toggle" class="px-3 py-2 rounded-xl text-sm font-bold border border-gray-200 dark:border-gray-700 hover:bg-gray-200/50 dark:hover:bg-gray-700/50 transition-all focus:outline-none">
+                EN
+            </button>
+
+            <!-- Theme Toggle -->
+            <button id="theme-toggle" class="p-2.5 rounded-xl hover:bg-gray-200/50 dark:hover:bg-gray-700/50 transition-all focus:outline-none group">
+                <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 hidden dark:block text-yellow-400 group-hover:rotate-45 transition-transform">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 block dark:hidden text-gray-600 group-hover:-rotate-12 transition-transform">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                </svg>
+            </button>
+        </div>
     </header>
 
     <!-- Chat Area -->
@@ -158,20 +162,20 @@
                 </svg>
             </div>
             <div class="glass-panel bg-white/70 dark:bg-gray-800/70 p-5 rounded-2xl rounded-tl-none shadow-sm flex-1">
-                <h3 class="font-display font-bold text-lg mb-2 text-blue-600 dark:text-blue-400">Вітаю! Я Ваш юридичний помічник у сфері запобігання корупції.</h3>
+                <h3 id="welcome-title" class="font-display font-bold text-lg mb-2 text-blue-600 dark:text-blue-400">Вітаю! Я Ваш юридичний помічник у сфері запобігання корупції.</h3>
                 <div class="prose-content text-sm">
-                    Я поєдную фахові юридичні знання та можливості пошуку.
+                    <p id="welcome-desc">Я поєдную фахові юридичні знання та можливості пошуку.</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 my-3">
                         <div class="bg-blue-50 dark:bg-blue-900/30 p-3 rounded-lg border border-blue-100 dark:border-blue-800">
-                            <strong>Юридичний радник</strong>
-                            <p class="text-xs mt-1 text-gray-600 dark:text-gray-300">Аналіз ситуацій, пошук на <a href="https://zakon.rada.gov.ua/" target="_blank" class="underline hover:text-blue-600 transition-colors">zakon.rada.gov.ua</a>, плани дій та пошук судової практики.</p>
+                            <strong id="card-legal-title">Юридичний радник</strong>
+                            <p id="card-legal-desc" class="text-xs mt-1 text-gray-600 dark:text-gray-300">Аналіз ситуацій, пошук на <a href="https://zakon.rada.gov.ua/" target="_blank" class="underline hover:text-blue-600 transition-colors">zakon.rada.gov.ua</a>, плани дій та пошук судової практики.</p>
                         </div>
                         <div class="bg-purple-50 dark:bg-purple-900/30 p-3 rounded-lg border border-purple-100 dark:border-purple-800">
-                            <strong>Пошук зображень</strong>
-                            <p class="text-xs mt-1 text-gray-600 dark:text-gray-300">Напишіть <span class="font-mono bg-gray-200 dark:bg-gray-700 px-1 rounded">Знайди фото...</span>, щоб знайти та показати справжні зображення.</p>
+                            <strong id="card-image-title">Пошук зображень</strong>
+                            <p id="card-image-desc" class="text-xs mt-1 text-gray-600 dark:text-gray-300">Напишіть <span class="font-mono bg-gray-200 dark:bg-gray-700 px-1 rounded">Знайди фото...</span>, щоб знайти та показати справжні зображення.</p>
                         </div>
                     </div>
-                    <p class="text-xs opacity-70">Усі відповіді формуються в режимі реального часу без штучних затримок.</p>
+                    <p id="welcome-footer" class="text-xs opacity-70">Усі відповіді формуються в режимі реального часу без штучних затримок.</p>
                 </div>
             </div>
         </div>
@@ -213,24 +217,50 @@
 
     <script>
         /* --- CONFIGURATION --- */
-        // Виправлено: встановлено новий API-ключ, наданий користувачем.
-        const apiKey = "AIzaSyDwhyhWDoIfHke8_fY1keceOrQDhhwU214";
-        
-        // Endpoints (Використовуємо тільки Text/Chat API з доступом до пошуку)
+        // Оновлено API ключ
+        const apiKey = "AIzaSyDX4r442JEXhbP8VqFXZDOOFB7PFOzYJmE";
         const TEXT_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
 
-        // Основний промпт для юридичних питань
-        const SYSTEM_PROMPT_LEGAL = `
-        ТИ: Фаховий юридичний консультант (Україна). Твій пріоритет — захист прав користувача.
+        /* --- LOCALIZATION DATA --- */
+        const translations = {
+            uk: {
+                appTitle: "Юридичний помічник",
+                appSubtitle: "Онлайн • Rada.gov.ua • Google Пошук",
+                welcomeTitle: "Вітаю! Я Ваш юридичний помічник у сфері запобігання корупції.",
+                welcomeDesc: "Я поєдную фахові юридичні знання та можливості пошуку.",
+                cardLegalTitle: "Юридичний радник",
+                cardLegalDesc: 'Аналіз ситуацій, пошук на <a href="https://zakon.rada.gov.ua/" target="_blank" class="underline hover:text-blue-600 transition-colors">zakon.rada.gov.ua</a>, плани дій та пошук судової практики.',
+                cardImageTitle: "Пошук зображень",
+                cardImageDesc: 'Напишіть <span class="font-mono bg-gray-200 dark:bg-gray-700 px-1 rounded">Знайди фото...</span>, щоб знайти та показати справжні зображення.',
+                welcomeFooter: "Усі відповіді формуються в режимі реального часу без штучних затримок.",
+                inputPlaceholder: "Опишіть юридичну проблему або напишіть 'знайди фото...'",
+                toggleBtn: "EN"
+            },
+            en: {
+                appTitle: "Legal Assistant",
+                appSubtitle: "Online • Rada.gov.ua • Google Search",
+                welcomeTitle: "Hello! I am your Legal Assistant in corruption prevention.",
+                welcomeDesc: "I combine professional legal knowledge with search capabilities.",
+                cardLegalTitle: "Legal Advisor",
+                cardLegalDesc: 'Situation analysis, search on <a href="https://zakon.rada.gov.ua/en" target="_blank" class="underline hover:text-blue-600 transition-colors">zakon.rada.gov.ua</a>, action plans, and case law search.',
+                cardImageTitle: "Image Search",
+                cardImageDesc: 'Type <span class="font-mono bg-gray-200 dark:bg-gray-700 px-1 rounded">Find photo of...</span> to find and display real images.',
+                welcomeFooter: "All answers are generated in real-time without artificial delays.",
+                inputPlaceholder: "Describe a legal issue or type 'find photo of...'",
+                toggleBtn: "UA"
+            }
+        };
+
+        /* --- PROMPTS --- */
         
+        // UKRAINIAN PROMPT (DEFAULT)
+        const SYSTEM_PROMPT_LEGAL_UK = `
+        ТИ: Фаховий юридичний консультант (Україна). Твій пріоритет — захист прав користувача.
         ПРАВИЛА РОБОТИ:
         1. ЕТИКЕТ: Завжди пиши звертання "Ви", "Ваш", "Вам" з великої літери.
         2. ДЖЕРЕЛА: Уся інформація має базуватись на чинному законодавстві України. Пріоритет №1: zakon.rada.gov.ua. Також використовуй court.gov.ua (судова влада).
-        3. ПОШУК (Grounding): Обов'язково використовуй Google Search для:
-           - Знаходження актуальних редакцій законів.
-           - Пошуку подібних судових справ (судова практика).
-           - Пошуку корисних відео (YouTube) або статей.
-        4. СТИЛЬ: Лаконічно, по суті, без зайвих слів. Дотримуйся норм українського правопису 2019 року. Уникай канцеляризмів та росіянізмів.
+        3. ПОШУК (Grounding): Обов'язково використовуй Google Search для: знаходження актуальних редакцій законів, пошуку судової практики, корисних відео.
+        4. СТИЛЬ: Лаконічно, по суті, без зайвих слів. Дотримуйся норм українського правопису 2019 року.
         5. ЗАВЕРШЕННЯ: У кінці кожної відповіді запитуй: "Як я можу до Вас звертатися?"
         
         СТРУКТУРА ВІДПОВІДІ (Markdown):
@@ -240,34 +270,46 @@
         ### 🚀 План дій (покроково)
         `;
 
-        // Промпт для пошуку зображень
+        // ENGLISH PROMPT (ADAPTIVE)
+        const SYSTEM_PROMPT_LEGAL_EN = `
+        YOU: A professional Legal Consultant specialized in Ukrainian Law. Your priority is protecting the user's rights.
+        
+        RULES OF WORK:
+        1. LANGUAGE: **Strictly use British English**.
+        2. SOURCES: All information must be based on current Ukrainian legislation (zakon.rada.gov.ua). Use court.gov.ua for case law.
+        3. SEARCH (Grounding): Mandatory use of Google Search to find current law revisions, case law, and relevant resources.
+        4. STYLE: Concise, to the point, academic yet accessible.
+        5. CLOSING: Always ask "How may I address you?" at the end.
+
+        RESPONSE STRUCTURE (Markdown):
+        ### 🧐 Situation Analysis
+        ### 📚 Case Law & Precedents
+        ### 🎥 Useful Resources
+        ### 🚀 Action Plan (Step-by-step)
+        `;
+
+        // IMAGE SEARCH PROMPT
         const SYSTEM_PROMPT_IMAGE_SEARCH = `
-        ТИ: Експерт із пошуку медіаконтенту.
-        ЗАВДАННЯ: Знайти справжнє, відповідне зображення в Інтернеті за запитом користувача.
-        
-        ПРАВИЛА:
-        1. Використовуй Google Search для пошуку зображення.
-        2. Пріоритет джерел: Wikimedia Commons, офіційні державні сайти (.gov.ua), надійні новини.
-        3. Мета: Знайти пряме посилання на зображення (jpg, png, webp), яке можна вставити в чат.
-        4. ЯКЩО ЗНАЙШОВ ПРЯМЕ ПОСИЛАННЯ:
-           - Поверни ВІДПОВІДЬ у форматі Markdown: ![Опис зображення](URL_ЗОБРАЖЕННЯ).
-           - Додай короткий підпис під фото.
-        5. ЯКЩО ПРЯМЕ ПОСИЛАННЯ НЕДОСТУПНЕ (захист від хотлінку):
-           - Поверни Markdown посилання на результати пошуку Google Images: [🔍 Переглянути зображення за запитом "[ЗАПИТ]" в Google](https://www.google.com/search?tbm=isch&q=[ЗАПИТ])
-        
-        ПРИКЛАД ВІДПОВІДІ:
-        ![Верховна Рада](https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Verkhovna_Rada_building.jpg/800px-Verkhovna_Rada_building.jpg)
-        
-        Будівля Верховної Ради України.
+        YOU: Media content expert.
+        TASK: Find a real, relevant image on the Internet based on user request.
+        RULES:
+        1. Use Google Search.
+        2. Priority: Wikimedia Commons, official government sites (.gov.ua), reliable news.
+        3. IF DIRECT LINK FOUND: Return Markdown ![Alt text](IMAGE_URL) with a short caption.
+        4. IF NO DIRECT LINK: Return Markdown link [🔍 View images for "[QUERY]" on Google](https://www.google.com/search?tbm=isch&q=[QUERY]).
+        5. Respond in the language of the user's query (English or Ukrainian).
         `;
 
         /* --- STATE & UI ELEMENTS --- */
+        let currentLang = localStorage.getItem('lang') || 'uk';
+        
         const chatContainer = document.getElementById('chat-container');
         const chatForm = document.getElementById('chat-form');
         const userInput = document.getElementById('user-input');
         const sendBtn = document.getElementById('send-btn');
         const loadingSpinner = document.getElementById('loading-spinner');
         const themeToggle = document.getElementById('theme-toggle');
+        const langToggle = document.getElementById('lang-toggle');
 
         /* --- THEME HANDLING --- */
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -277,6 +319,40 @@
             document.documentElement.classList.toggle('dark');
             localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
         });
+
+        /* --- LANGUAGE HANDLING --- */
+        function updateLanguageUI() {
+            const t = translations[currentLang];
+            
+            // Update Text Content
+            document.getElementById('app-title').textContent = t.appTitle;
+            document.getElementById('app-subtitle').innerHTML = `<span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> ${t.appSubtitle}`;
+            document.getElementById('welcome-title').textContent = t.welcomeTitle;
+            document.getElementById('welcome-desc').textContent = t.welcomeDesc;
+            document.getElementById('card-legal-title').textContent = t.cardLegalTitle;
+            document.getElementById('card-legal-desc').innerHTML = t.cardLegalDesc;
+            document.getElementById('card-image-title').textContent = t.cardImageTitle;
+            document.getElementById('card-image-desc').innerHTML = t.cardImageDesc;
+            document.getElementById('welcome-footer').textContent = t.welcomeFooter;
+            
+            // Update Inputs and Buttons
+            userInput.placeholder = t.inputPlaceholder;
+            langToggle.textContent = t.toggleBtn;
+
+            // Update HTML lang attribute
+            document.documentElement.lang = currentLang;
+            
+            // Save preference
+            localStorage.setItem('lang', currentLang);
+        }
+
+        langToggle.addEventListener('click', () => {
+            currentLang = currentLang === 'uk' ? 'en' : 'uk';
+            updateLanguageUI();
+        });
+
+        // Initialize Language
+        updateLanguageUI();
 
         /* --- AUTO RESIZE TEXTAREA --- */
         userInput.addEventListener('input', function() {
@@ -303,7 +379,7 @@
             setLoading(true);
 
             // 2. Determine Intent (Search Image vs Legal Text)
-            // Список тригерів для пошуку зображень
+            // Updated Regex to include English triggers
             const searchTriggers = /^(знайди|знайдіть|пошук|фото|зображення|картинка|find|search|photo|image|picture|show me)/i;
             const isImageSearchRequest = searchTriggers.test(message);
 
@@ -315,7 +391,10 @@
                 }
             } catch (error) {
                 console.error(error);
-                appendMessage(`⚠️ **Помилка:** ${error.message || "Не вдалося отримати відповідь. Спробуйте оновити сторінку."}`, 'bot');
+                const errorMsg = currentLang === 'uk' 
+                    ? `⚠️ **Помилка:** ${error.message || "Не вдалося отримати відповідь. Спробуйте оновити сторінку."}`
+                    : `⚠️ **Error:** ${error.message || "Failed to get response. Please refresh the page."}`;
+                appendMessage(errorMsg, 'bot');
             } finally {
                 setLoading(false);
             }
@@ -323,9 +402,12 @@
 
         /* --- TEXT GENERATION (LEGAL) --- */
         async function handleTextGeneration(prompt) {
+            // Choose prompt based on language
+            const systemPrompt = currentLang === 'uk' ? SYSTEM_PROMPT_LEGAL_UK : SYSTEM_PROMPT_LEGAL_EN;
+
             const payload = {
                 contents: [{ role: "user", parts: [{ text: prompt }] }],
-                systemInstruction: { parts: [{ text: SYSTEM_PROMPT_LEGAL }] },
+                systemInstruction: { parts: [{ text: systemPrompt }] },
                 tools: [{ google_search: {} }],
                 generationConfig: { temperature: 0.5, maxOutputTokens: 2048 }
             };
@@ -341,12 +423,15 @@
             processGeminiResponse(data);
         }
 
-        /* --- IMAGE SEARCH (VIA TEXT MODEL GROUNDING) --- */
+        /* --- IMAGE SEARCH --- */
         async function handleImageSearch(prompt) {
+            // Add explicit instruction to respond in British English if mode is EN, even for images
+            let promptSuffix = currentLang === 'en' ? " (Respond in British English)" : "";
+
             const payload = {
-                contents: [{ role: "user", parts: [{ text: prompt }] }],
+                contents: [{ role: "user", parts: [{ text: prompt + promptSuffix }] }],
                 systemInstruction: { parts: [{ text: SYSTEM_PROMPT_IMAGE_SEARCH }] },
-                tools: [{ google_search: {} }], // Вмикаємо пошук, щоб модель могла знайти URL
+                tools: [{ google_search: {} }],
                 generationConfig: { temperature: 0.3, maxOutputTokens: 1000 }
             };
 
@@ -375,7 +460,7 @@
             if (content) {
                 appendMessage(content, 'bot', sources);
             } else {
-                throw new Error("Порожня відповідь від моделі.");
+                throw new Error(currentLang === 'uk' ? "Порожня відповідь від моделі." : "Empty response from model.");
             }
         }
 
@@ -391,7 +476,7 @@
             if (sender === 'user') {
                 avatar.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z" clip-rule="evenodd" /></svg>';
             } else {
-                // Bot Icon (Camera/Search if it looks like an image response, otherwise Scale)
+                // Bot Icon
                 const isImageResponse = text.includes('![') || text.includes('<img');
                 if (isImageResponse) {
                     avatar.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-purple-500"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607ZM10.5 7.5v6m3-3h-6" /></svg>';
@@ -415,24 +500,27 @@
                     img.onerror = function() {
                         this.style.display = 'none';
                         const fallbackLink = document.createElement('a');
-                        fallbackLink.href = `https://www.google.com/search?tbm=isch&q=${encodeURIComponent(text.substring(0, 50))}`; // Rough query fallback
+                        fallbackLink.href = `https://www.google.com/search?tbm=isch&q=${encodeURIComponent(text.substring(0, 50))}`;
                         fallbackLink.target = '_blank';
                         fallbackLink.className = 'inline-block mt-2 text-blue-500 underline text-xs';
-                        fallbackLink.textContent = 'Зображення не завантажилось. Натисніть тут для пошуку в Google.';
+                        fallbackLink.textContent = currentLang === 'uk' 
+                            ? 'Зображення не завантажилось. Натисніть тут для пошуку в Google.'
+                            : 'Image failed to load. Click here to search on Google.';
                         this.parentNode.insertBefore(fallbackLink, this.nextSibling);
                     };
                 });
 
                 // Render Sources
                 if (sources.length > 0) {
+                    const sourcesTitle = currentLang === 'uk' ? 'Джерела та посилання:' : 'Sources & Links:';
                     const sourcesHtml = `
                         <div class="mt-4 pt-3 border-t border-gray-200 dark:border-gray-700">
-                            <p class="text-[10px] uppercase tracking-wider font-bold text-gray-500 mb-2">Джерела та посилання:</p>
+                            <p class="text-[10px] uppercase tracking-wider font-bold text-gray-500 mb-2">${sourcesTitle}</p>
                             <div class="flex flex-wrap gap-2">
                                 ${sources.map(s => `
                                     <a href="${s.uri}" target="_blank" class="text-xs bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-600 px-3 py-1.5 rounded-full hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors flex items-center gap-1.5 max-w-full sm:max-w-[250px] truncate shadow-sm">
-                                        <span class="truncate">${s.title}</span>
-                                        <svg class="w-3 h-3 flex-shrink-0 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                                            <span class="truncate">${s.title}</span>
+                                            <svg class="w-3 h-3 flex-shrink-0 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
                                     </a>
                                 `).join('')}
                             </div>
