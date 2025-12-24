@@ -32,6 +32,7 @@
                     animation: {
                         'blob': 'blob 7s infinite',
                         'fade-in': 'fadeIn 0.4s ease-out forwards',
+                        'scale-in': 'scaleIn 0.2s ease-out forwards',
                     },
                     keyframes: {
                         blob: {
@@ -43,6 +44,10 @@
                         fadeIn: {
                             '0%': { opacity: '0', transform: 'translateY(10px)' },
                             '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        scaleIn: {
+                            '0%': { opacity: '0', transform: 'scale(0.95)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' },
                         }
                     }
                 }
@@ -115,6 +120,47 @@
         <div class="bg-blob bg-pink-400 w-96 h-96 bottom-0 left-1/2 animate-blob animation-delay-4000 mix-blend-multiply dark:mix-blend-screen dark:bg-pink-900/40"></div>
     </div>
 
+    <!-- Confirmation Modal (Hidden by default) -->
+    <div id="confirmation-modal" class="fixed inset-0 z-[100] hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity opacity-0" id="modal-backdrop"></div>
+        
+        <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+            <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+                <!-- Modal Panel -->
+                <div class="relative transform overflow-hidden rounded-2xl bg-white dark:bg-gray-800 text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-sm border border-white/10 opacity-0 scale-95" id="modal-panel">
+                    <div class="px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                        <div class="flex flex-col items-center justify-center text-center">
+                            <!-- Icon -->
+                            <div class="mx-auto flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/20 mb-4 sm:mx-0">
+                                <svg class="h-7 w-7 text-red-600 dark:text-red-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                                </svg>
+                            </div>
+                            <div class="mt-2">
+                                <h3 class="text-xl font-display font-bold leading-6 text-gray-900 dark:text-white mb-2" id="modal-title">Очищення історії</h3>
+                                <div class="mt-2">
+                                    <p class="text-sm text-gray-500 dark:text-gray-300" id="modal-desc">
+                                        Ви дійсно хочете видалити всю історію листування? Цю дію неможливо буде скасувати.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Footer Buttons -->
+                    <div class="bg-gray-50 dark:bg-gray-700/50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 gap-2">
+                        <button type="button" id="modal-confirm-btn" class="inline-flex w-full justify-center rounded-xl bg-red-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-red-500 transition-all hover:shadow-lg hover:shadow-red-500/20 sm:ml-3 sm:w-auto">
+                            Видалити
+                        </button>
+                        <button type="button" id="modal-cancel-btn" class="mt-3 inline-flex w-full justify-center rounded-xl bg-white dark:bg-gray-800 px-5 py-2.5 text-sm font-semibold text-gray-900 dark:text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors sm:mt-0 sm:w-auto">
+                            Скасувати
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Header -->
     <header class="glass-panel bg-glass-light dark:bg-glass-dark sticky top-0 z-50 px-4 sm:px-6 py-4 flex justify-between items-center">
         <div class="flex items-center gap-3">
@@ -136,7 +182,8 @@
 
         <div class="flex items-center gap-2">
             <!-- Clear History Button -->
-            <button id="clear-history" title="Очистити історію / Clear History" class="p-2.5 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 border border-transparent hover:border-red-200 dark:hover:border-red-800 transition-all focus:outline-none">
+            <button id="clear-history" title="Очистити історію / Clear History" class="p-2.5 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 border border-transparent hover:border-red-200 dark:hover:border-red-800 transition-all focus:outline-none group relative">
+                <div class="absolute inset-0 bg-red-400 rounded-xl opacity-0 group-hover:opacity-10 transition-opacity"></div>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
                 </svg>
@@ -240,7 +287,12 @@
                 cardImageDesc: 'Напишіть <span class="font-mono bg-gray-200 dark:bg-gray-700 px-1 rounded">Знайди фото...</span>, щоб знайти та показати справжні зображення.',
                 welcomeFooter: "Усі відповіді формуються в режимі реального часу без штучних затримок.",
                 inputPlaceholder: "Опишіть юридичну проблему або напишіть 'знайди фото...'",
-                toggleBtn: "EN"
+                toggleBtn: "EN",
+                // Modal Text
+                modalTitle: "Очищення історії",
+                modalDesc: "Ви дійсно хочете видалити всю історію листування? Цю дію неможливо буде скасувати.",
+                modalConfirm: "Видалити",
+                modalCancel: "Скасувати"
             },
             en: {
                 appTitle: "Legal Assistant",
@@ -253,7 +305,12 @@
                 cardImageDesc: 'Type <span class="font-mono bg-gray-200 dark:bg-gray-700 px-1 rounded">Find photo of...</span> to find and display real images.',
                 welcomeFooter: "All answers are generated in real-time without artificial delays.",
                 inputPlaceholder: "Describe a legal issue or type 'find photo of...'",
-                toggleBtn: "UA"
+                toggleBtn: "UA",
+                // Modal Text
+                modalTitle: "Clear History",
+                modalDesc: "Are you sure you want to delete all chat history? This action cannot be undone.",
+                modalConfirm: "Delete",
+                modalCancel: "Cancel"
             }
         };
 
@@ -320,6 +377,13 @@
         const langToggle = document.getElementById('lang-toggle');
         const clearHistoryBtn = document.getElementById('clear-history');
 
+        // Modal Elements
+        const modal = document.getElementById('confirmation-modal');
+        const modalBackdrop = document.getElementById('modal-backdrop');
+        const modalPanel = document.getElementById('modal-panel');
+        const modalCancelBtn = document.getElementById('modal-cancel-btn');
+        const modalConfirmBtn = document.getElementById('modal-confirm-btn');
+
         /* --- THEME HANDLING --- */
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
@@ -344,6 +408,12 @@
             document.getElementById('card-image-desc').innerHTML = t.cardImageDesc;
             document.getElementById('welcome-footer').textContent = t.welcomeFooter;
             
+            // Modal Text Updates
+            document.getElementById('modal-title').textContent = t.modalTitle;
+            document.getElementById('modal-desc').textContent = t.modalDesc;
+            modalConfirmBtn.textContent = t.modalConfirm;
+            modalCancelBtn.textContent = t.modalCancel;
+            
             // Update Inputs and Buttons
             userInput.placeholder = t.inputPlaceholder;
             langToggle.textContent = t.toggleBtn;
@@ -363,7 +433,7 @@
         // Initialize Language
         updateLanguageUI();
 
-        /* --- HISTORY HANDLING --- */
+        /* --- HISTORY HANDLING & MODAL LOGIC --- */
         function loadHistory() {
             const saved = localStorage.getItem('chat_history');
             if (saved) {
@@ -384,15 +454,43 @@
             localStorage.setItem('chat_history', JSON.stringify(chatHistory));
         }
 
-        clearHistoryBtn.addEventListener('click', () => {
-            if(confirm(currentLang === 'uk' ? 'Очистити всю історію чату?' : 'Clear all chat history?')) {
-                localStorage.removeItem('chat_history');
-                chatHistory = [];
-                // Remove all dynamic messages, keep welcome message
-                const welcomeMsg = document.getElementById('welcome-message');
-                chatContainer.innerHTML = '';
-                if(welcomeMsg) chatContainer.appendChild(welcomeMsg);
-            }
+        // --- Modal Logic ---
+        function showModal() {
+            modal.classList.remove('hidden');
+            // Small delay to allow browser to register display:block before adding opacity classes for transition
+            setTimeout(() => {
+                modalBackdrop.classList.remove('opacity-0');
+                modalPanel.classList.remove('opacity-0', 'scale-95');
+                modalPanel.classList.add('opacity-100', 'scale-100');
+            }, 10);
+        }
+
+        function hideModal() {
+            modalBackdrop.classList.add('opacity-0');
+            modalPanel.classList.remove('opacity-100', 'scale-100');
+            modalPanel.classList.add('opacity-0', 'scale-95');
+            
+            // Wait for transition to finish before hiding element
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        clearHistoryBtn.addEventListener('click', showModal);
+        
+        modalCancelBtn.addEventListener('click', hideModal);
+        modalBackdrop.addEventListener('click', hideModal);
+
+        modalConfirmBtn.addEventListener('click', () => {
+            // Delete Logic
+            localStorage.removeItem('chat_history');
+            chatHistory = [];
+            // Remove all dynamic messages, keep welcome message
+            const welcomeMsg = document.getElementById('welcome-message');
+            chatContainer.innerHTML = '';
+            if(welcomeMsg) chatContainer.appendChild(welcomeMsg);
+            
+            hideModal();
         });
 
         // Load history on startup
