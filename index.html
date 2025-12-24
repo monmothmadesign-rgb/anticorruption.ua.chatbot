@@ -135,6 +135,13 @@
         </div>
 
         <div class="flex items-center gap-2">
+            <!-- Clear History Button -->
+            <button id="clear-history" title="Очистити історію / Clear History" class="p-2.5 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 border border-transparent hover:border-red-200 dark:hover:border-red-800 transition-all focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                </svg>
+            </button>
+
             <!-- Language Toggle -->
             <button id="lang-toggle" class="px-3 py-2 rounded-xl text-sm font-bold border border-gray-200 dark:border-gray-700 hover:bg-gray-200/50 dark:hover:bg-gray-700/50 transition-all focus:outline-none">
                 EN
@@ -154,8 +161,8 @@
 
     <!-- Chat Area -->
     <main id="chat-container" class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 scroll-smooth">
-        <!-- Welcome Message -->
-        <div class="flex items-start gap-4 animate-fade-in w-full max-w-4xl mx-auto">
+        <!-- Welcome Message (Static ID added for persistence handling) -->
+        <div id="welcome-message" class="flex items-start gap-4 animate-fade-in w-full max-w-4xl mx-auto">
             <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center flex-shrink-0 text-white shadow-md">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
@@ -217,7 +224,6 @@
 
     <script>
         /* --- CONFIGURATION --- */
-        // Оновлено API ключ
         const apiKey = "AIzaSyDX4r442JEXhbP8VqFXZDOOFB7PFOzYJmE";
         const TEXT_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
 
@@ -302,6 +308,8 @@
 
         /* --- STATE & UI ELEMENTS --- */
         let currentLang = localStorage.getItem('lang') || 'uk';
+        // Chat History Init
+        let chatHistory = [];
         
         const chatContainer = document.getElementById('chat-container');
         const chatForm = document.getElementById('chat-form');
@@ -310,6 +318,7 @@
         const loadingSpinner = document.getElementById('loading-spinner');
         const themeToggle = document.getElementById('theme-toggle');
         const langToggle = document.getElementById('lang-toggle');
+        const clearHistoryBtn = document.getElementById('clear-history');
 
         /* --- THEME HANDLING --- */
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -354,6 +363,42 @@
         // Initialize Language
         updateLanguageUI();
 
+        /* --- HISTORY HANDLING --- */
+        function loadHistory() {
+            const saved = localStorage.getItem('chat_history');
+            if (saved) {
+                try {
+                    chatHistory = JSON.parse(saved);
+                    // Render saved messages
+                    chatHistory.forEach(msg => {
+                        appendMessage(msg.text, msg.sender, msg.sources || [], false); // false = do not save duplicate to array
+                    });
+                } catch (e) {
+                    console.error("Failed to parse history", e);
+                    localStorage.removeItem('chat_history');
+                }
+            }
+        }
+
+        function saveHistory() {
+            localStorage.setItem('chat_history', JSON.stringify(chatHistory));
+        }
+
+        clearHistoryBtn.addEventListener('click', () => {
+            if(confirm(currentLang === 'uk' ? 'Очистити всю історію чату?' : 'Clear all chat history?')) {
+                localStorage.removeItem('chat_history');
+                chatHistory = [];
+                // Remove all dynamic messages, keep welcome message
+                const welcomeMsg = document.getElementById('welcome-message');
+                chatContainer.innerHTML = '';
+                if(welcomeMsg) chatContainer.appendChild(welcomeMsg);
+            }
+        });
+
+        // Load history on startup
+        loadHistory();
+
+
         /* --- AUTO RESIZE TEXTAREA --- */
         userInput.addEventListener('input', function() {
             this.style.height = 'auto';
@@ -373,13 +418,12 @@
             if (!message) return;
 
             // 1. UI Updates
-            appendMessage(message, 'user');
+            appendMessage(message, 'user', [], true); // true = save to history
             userInput.value = '';
             userInput.style.height = 'auto';
             setLoading(true);
 
             // 2. Determine Intent (Search Image vs Legal Text)
-            // Updated Regex to include English triggers
             const searchTriggers = /^(знайди|знайдіть|пошук|фото|зображення|картинка|find|search|photo|image|picture|show me)/i;
             const isImageSearchRequest = searchTriggers.test(message);
 
@@ -394,7 +438,7 @@
                 const errorMsg = currentLang === 'uk' 
                     ? `⚠️ **Помилка:** ${error.message || "Не вдалося отримати відповідь. Спробуйте оновити сторінку."}`
                     : `⚠️ **Error:** ${error.message || "Failed to get response. Please refresh the page."}`;
-                appendMessage(errorMsg, 'bot');
+                appendMessage(errorMsg, 'bot', [], false); // Errors are not saved to history
             } finally {
                 setLoading(false);
             }
@@ -458,16 +502,23 @@
             }
 
             if (content) {
-                appendMessage(content, 'bot', sources);
+                appendMessage(content, 'bot', sources, true); // Save bot response
             } else {
                 throw new Error(currentLang === 'uk' ? "Порожня відповідь від моделі." : "Empty response from model.");
             }
         }
 
         /* --- UI RENDER HELPERS --- */
-        function appendMessage(text, sender, sources = []) {
+        function appendMessage(text, sender, sources = [], saveToHistory = false) {
+            
+            // Save to memory array and localStorage if requested
+            if (saveToHistory) {
+                chatHistory.push({ text, sender, sources });
+                saveHistory();
+            }
+
             const div = document.createElement('div');
-            div.className = `flex items-start gap-4 animate-fade-in ${sender === 'user' ? 'flex-row-reverse' : ''} max-w-4xl mx-auto w-full`;
+            div.className = `flex items-start gap-4 animate-fade-in ${sender === 'user' ? 'flex-row-reverse' : ''} max-w-4xl mx-auto w-full group/msg`;
 
             // Avatar
             const avatar = document.createElement('div');
